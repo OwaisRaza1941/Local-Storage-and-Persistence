@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:local_storage_and_persistence/screens/widgets/drawer_items.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -32,7 +33,18 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blueAccent,
-        title: Text(" Saving small key-value pairs locally"),
+        title: Text("Home Screen"),
+        leading: Builder(
+          builder: (context) => IconButton(
+            onPressed: () {
+              Scaffold.of(context).openDrawer();
+            },
+            icon: Icon(Icons.menu),
+          ),
+        ),
+      ),
+      drawer: Drawer(
+        child: DrawerItems(),
       ),
       body: Padding(
         padding: EdgeInsets.only(top: 50, left: 20, right: 20),
