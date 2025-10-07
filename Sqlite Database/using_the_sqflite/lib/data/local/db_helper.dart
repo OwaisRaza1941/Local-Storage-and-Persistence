@@ -67,7 +67,7 @@ class DBHelper {
     return rowsEffected > 0;
   }
 
-/// Reading all data
+  /// Reading all data
   Future<List<Map<String, dynamic>>> getAllNotes() async {
     var db = await getDB();
 
@@ -75,6 +75,33 @@ class DBHelper {
 
     return mData;
   }
+
+  /// Update Data
+  Future<bool> updateNote({
+    required String mTitle,
+    required String mDes,
+    required int sno,
+  }) async {
+    var db = await getDB();
+
+    int rowsEffected = await db.update(table_note, {
+      column_note_title: mTitle,
+      column_note_des: mDes,
+    }, where: "$column_note_sno = $sno");
+
+    return rowsEffected > 0;
+  }
+
+  /// Delete Note
+
+  Future<bool> deleteNote({required int sno}) async {
+    var db = await getDB();
+
+    int rowsEffected = await db.delete(
+      table_note,
+      where: "$column_note_sno = $sno",
+    );
+
+    return rowsEffected > 0;
+  }
 }
-
-
