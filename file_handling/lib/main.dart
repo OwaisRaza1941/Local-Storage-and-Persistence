@@ -1,4 +1,4 @@
-import 'package:file_handling/screens/home_screen.dart';
+import 'package:file_handling/views/home_screen_two.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: HomeScreen(),
+      home: HomeScreenTwo(),
     );
   }
 }
