@@ -1,40 +1,77 @@
+import 'dart:convert';
 import 'dart:io';
-
+import 'package:file_handling/models/notes_models.dart';
 import 'package:path_provider/path_provider.dart';
 
 class FileHandler {
-  FileHandler._(); // Private constructor
-  static final FileHandler instance = FileHandler._();
+  /// singletone
+  FileHandler._();
 
-  Future<String> getFilePath() async {
-    final directory = await getApplicationDocumentsDirectory();
-    return directory.path;
+  // List<NotesModel> notes = [];
+
+  static final FileHandler getInstance = FileHandler._();
+
+  /// getLocalPath
+  Future<Directory> getLocalPath() async {
+    Directory? directory = await getDownloadsDirectory();
+    if (await directory!.exists()) {
+      directory.create(recursive: true);
+    }
+    return directory;
   }
 
+  /// getLoclFile
   Future<File> getLocalFile() async {
-    final path = await getFilePath();
-    return File('$path/notes.txt');
+    final path = await getLocalPath();
+    return File("${path.path}/note.json.txt");
   }
 
-  Future<void> writeData(String content) async {
-    final file = await getLocalFile();
-    await file.writeAsString(content);
-  }
-
-  Future<String> readData() async {
+  /// writeData
+  Future<void> writeData({required NotesModel note}) async {
     try {
       final file = await getLocalFile();
-      String contents = await file.readAsString();
-      return contents;
+
+      List<NotesModel> oldNotes = await readData();
+      oldNotes.add(note);
+
+      List<Map<String, dynamic>> notesMap = oldNotes
+          .map((n) => n.toJson())
+          .toList();
+
+      await file.writeAsString(jsonEncode(notesMap));
+      print("✅ Saved successfully at: ${file.path}");
     } catch (e) {
-      return 'Error: $e';
+      print("❌ Error while writing file: $e");
     }
   }
 
-  Future<void> deleteFile() async {
-    final file = await getLocalFile();
-    if (await file.exists()) {
-      await file.delete();
+  /// Read Data
+  Future<List<NotesModel>> readData() async {
+    try {
+      final file = await getLocalFile();
+      if (!await file.exists()) {
+        return [];
+      }
+
+      String content = await file.readAsString();
+
+      if (content.isEmpty) {
+        return [];
+      }
+
+      List<dynamic> jsonList = jsonDecode(content);
+
+      return jsonList.map((json) => NotesModel.fromJson(json)).toList();
+    } catch (e) {
+      print("❌ Error while reading file: $e");
+      return [];
     }
   }
+
+  //   //   Future<void> deleteFile() async {
+  //   //     final file = await getLocalFile();
+  //   //     if (await file.exists()) {
+  //   //       await file.delete();
+  //   //     }
+  //   //   }
 }
