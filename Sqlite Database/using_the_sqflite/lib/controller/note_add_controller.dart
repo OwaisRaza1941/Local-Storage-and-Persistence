@@ -1,8 +1,9 @@
 import 'package:get/get.dart';
 import 'package:using_the_sqflite/data/local/db_helper.dart';
+import 'package:using_the_sqflite/models/notes_models.dart';
 
 class NoteAddController extends GetxController {
-  var allnotes = <Map<String, dynamic>>[].obs;
+  var allnotes = <NotesModel>[].obs;
   DBHelper? dbRef;
 
   @override
@@ -13,6 +14,7 @@ class NoteAddController extends GetxController {
   }
 
   void getNotes() async {
-    allnotes.value = await dbRef!.getAllNotes();
+    var rawData = await dbRef!.getAllNotes();
+    allnotes.value = rawData.map((e) => NotesModel.fromMap(e)).toList();
   }
 }

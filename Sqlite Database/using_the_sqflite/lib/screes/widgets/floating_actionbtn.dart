@@ -3,12 +3,13 @@ import 'package:using_the_sqflite/components/add_note_fields.dart';
 import 'package:using_the_sqflite/data/local/db_helper.dart';
 import 'package:get/get.dart';
 import 'package:using_the_sqflite/controller/note_add_controller.dart';
+import 'package:using_the_sqflite/models/notes_models.dart';
 
 class AddNoteFAB extends StatelessWidget {
   final DBHelper dbRef;
   final VoidCallback refreshNotes;
-  final int? index;       // 👈 Index of note (for update)
-  final bool isUpdate;    // 👈 Add or Update mode
+  final int? index; // 👈 Index of note (for update)
+  final bool isUpdate; // 👈 Add or Update mode
 
   AddNoteFAB({
     required this.dbRef,
@@ -29,10 +30,9 @@ class AddNoteFAB extends StatelessWidget {
       onPressed: () {
         /// Agar update hai to purana data load karo
         if (isUpdate && index != null) {
-          titleController.text =
-              controller.allnotes[index!][DBHelper.column_note_title];
-          desController.text =
-              controller.allnotes[index!][DBHelper.column_note_des];
+          titleController.text = controller.allnotes[index!].title.toString();
+          desController.text = controller.allnotes[index!].description
+              .toString();
         }
         getModelBottomSheet(context, isUpdate: isUpdate, index: index);
       },
@@ -87,18 +87,23 @@ class AddNoteFAB extends StatelessWidget {
 
                         if (title.isNotEmpty && des.isNotEmpty) {
                           if (isUpdate && index != null) {
-                            /// 👇 Update note
-                            bool check = await dbRef.updateNote(
-                              mTitle: title,
-                              mDes: des,
-                              sno: controller
-                                  .allnotes[index][DBHelper.column_note_sno],
+                            // 👇 Update existing note
+                            NotesModel updateNote = NotesModel(
+                              sNo: controller.allnotes[index].sNo,
+                              title: title,
+                              description: des,
                             );
+
+                            bool check = await dbRef.updateNote(updateNote);
                             if (check) refreshNotes();
                           } else {
-                            /// 👇 Add note
-                            await dbRef.addNote(mTitle: title, mDes: des);
-                            refreshNotes();
+                            NotesModel newNote = NotesModel(
+                              title: title,
+                              description: des,
+                            );
+
+                            bool check = await dbRef.addNote(newNote);
+                            if (check) refreshNotes();
                           }
 
                           titleController.clear();

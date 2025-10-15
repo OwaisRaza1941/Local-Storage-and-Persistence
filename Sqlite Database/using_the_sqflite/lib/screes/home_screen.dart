@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:using_the_sqflite/controller/note_add_controller.dart';
-import 'package:using_the_sqflite/data/local/db_helper.dart';
 import 'package:using_the_sqflite/screes/widgets/floating_actionbtn.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -21,14 +20,10 @@ class HomeScreen extends StatelessWidget {
                 itemCount: controller.allnotes.length,
                 itemBuilder: (context, index) {
                   return ListTile(
-                    leading: Text(
-                      "${[index + 1]}",
-                    ),
-                    title: Text(
-                      controller.allnotes[index][DBHelper.column_note_title],
-                    ),
+                    leading: Text("${[index + 1]}"),
+                    title: Text(controller.allnotes[index].title ?? ''),
                     subtitle: Text(
-                      controller.allnotes[index][DBHelper.column_note_des],
+                      controller.allnotes[index].description ?? '',
                     ),
                     trailing: SizedBox(
                       width: 50,
@@ -52,8 +47,7 @@ class HomeScreen extends StatelessWidget {
                           InkWell(
                             onTap: () async {
                               await controller.dbRef!.deleteNote(
-                                sno: controller
-                                    .allnotes[index][DBHelper.column_note_sno],
+                                sno: controller.allnotes[index].sNo!,
                               );
                               controller.getNotes();
                             },
