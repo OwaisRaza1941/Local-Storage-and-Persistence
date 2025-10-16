@@ -2,18 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:local_storage_and_persistence/components/login_fields_fucntion.dart';
 import 'package:local_storage_and_persistence/screens/home_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:local_storage_and_persistence/services/local_storage_services.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // final String keyName = 'loginState';
+
+    final fromKey = GlobalKey<FormState>();
+
     TextEditingController nameController = TextEditingController();
     TextEditingController emailController = TextEditingController();
     TextEditingController passwordController = TextEditingController();
-
-    final fromKey = GlobalKey<FormState>();
 
     return Scaffold(
       appBar: AppBar(
@@ -67,14 +69,11 @@ class LoginScreen extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: () async {
                     if (fromKey.currentState!.validate()) {
-                      final prefs = await SharedPreferences.getInstance();
-
-                      await prefs.setString("username", nameController.text);
-                      await prefs.setString("email", emailController.text);
-                      await prefs.setBool("isLoggedIn", true);
-
-                      Get.to(HomeScreen());
+                      LocalStorage.setBool(LocalStorageKeys.loginKey, true);
+                      // final prefs = await SharedPreferences.getInstance();
+                      // await prefs.setBool(keyName, true);
                     }
+                    Get.to(HomeScreen());
                   },
                   child: Text("Login"),
                 ),

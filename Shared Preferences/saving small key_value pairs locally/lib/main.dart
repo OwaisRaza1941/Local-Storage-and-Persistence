@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:local_storage_and_persistence/controller/theme_change_ctrl.dart';
 import 'package:local_storage_and_persistence/screens/splash_screen.dart';
+import 'package:local_storage_and_persistence/services/local_storage_services.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await LocalStorage.initialize();
   runApp(MyApp());
 }
 

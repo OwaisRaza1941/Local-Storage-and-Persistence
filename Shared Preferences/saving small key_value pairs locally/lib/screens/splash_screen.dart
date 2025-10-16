@@ -1,10 +1,9 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:local_storage_and_persistence/screens/home_screen.dart';
 import 'package:local_storage_and_persistence/screens/login_screen.dart';
 import 'package:local_storage_and_persistence/screens/onboarding_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:local_storage_and_persistence/services/local_storage_services.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -20,42 +19,22 @@ class _SplashScreenState extends State<SplashScreen> {
     checkAppFlow();
   }
 
-  void checkAppFlow() async {
-    final prefs = await SharedPreferences.getInstance();
-    bool? isOnboardingShown = prefs.getBool('isOnboardingShown');
-    bool? isLoggedIn = prefs.getBool('isLoggedIn');
+  Future<void> checkAppFlow() async {
+    // final prefs = await SharedPreferences.getInstance();
 
-    await Future.delayed(Duration(seconds: 2)); // Show splash for 2s
+    bool? isOnBoarding = LocalStorage.getBool(LocalStorageKeys.isONBoarding);
+    bool? isLoggined = LocalStorage.getBool(LocalStorageKeys.loginKey);
 
-    if (isOnboardingShown != true) {
-      Get.offAll(() => OnboardingScreen()); // Onboarding screen
-    } else if (isLoggedIn == true) {
-      Get.offAll(() => HomeScreen()); // Already logged in
+    await Future.delayed(Duration(seconds: 2));
+
+    if (isOnBoarding != true) {
+      Get.offAll(OnboardingScreen());
+    } else if (isLoggined == true) {
+      Get.offAll(HomeScreen());
     } else {
-      Get.offAll(() => LoginScreen()); // Not logged in
+      Get.offAll(LoginScreen());
     }
   }
-
-  // logout functionality
-
-  // Future<void> checkLoginStatus() async {a
-  //   final prefs = await SharedPreferences.getInstance();
-  //   bool? isLoggedIn = prefs.getBool("isLoggedIn");
-
-  //   Timer(Duration(seconds: 2), () {
-  //     if (isLoggedIn == true) {
-  //       Navigator.pushReplacement(
-  //         context,
-  //         MaterialPageRoute(builder: (context) => HomeScreen()),
-  //       );
-  //     } else {
-  //       Navigator.pushReplacement(
-  //         context,
-  //         MaterialPageRoute(builder: (context) => LoginScreen()),
-  //       );
-  //     }
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +43,11 @@ class _SplashScreenState extends State<SplashScreen> {
       body: Center(
         child: Text(
           "Splash Screen",
-          style: TextStyle(fontSize: 25, color: Colors.white),
+          style: TextStyle(
+            fontSize: 28,
+            color: Colors.white,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
     );

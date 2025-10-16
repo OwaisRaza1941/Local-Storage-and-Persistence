@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:local_storage_and_persistence/screens/widgets/drawer_items.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:local_storage_and_persistence/services/local_storage_services.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -10,23 +10,24 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  TextEditingController nameController = TextEditingController();
+  // static const keyName = "name";
+  String displayName = '';
+
   @override
   void initState() {
     super.initState();
     loadData();
   }
 
-  void saveData() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(keyName, nameController.text);
+  saveData() async {
+    LocalStorage.setString(LocalStorageKeys.userValueKey, nameController.text);
+    // final prefs = await SharedPreferences.getInstance();
+    // await prefs.setString(keyName, nameController.text);
     setState(() {
       displayName = nameController.text;
     });
   }
-
-  TextEditingController nameController = TextEditingController();
-  static const keyName = "name";
-  String displayName = "";
 
   @override
   Widget build(BuildContext context) {
@@ -43,9 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-      drawer: Drawer(
-        child: DrawerItems(),
-      ),
+      drawer: Drawer(child: DrawerItems()),
       body: Padding(
         padding: EdgeInsets.only(top: 50, left: 20, right: 20),
         child: Column(
@@ -66,14 +65,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 onPressed: () {
                   saveData();
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("Data saved successfully!")),
+                    SnackBar(
+                      content: Text("Data Sve Successfully!"),
+                      backgroundColor: Colors.black,
+                    ),
                   );
                 },
                 child: Text("Save Data"),
               ),
             ),
             SizedBox(height: 20),
-            Text("Save Value : $displayName"),
+            Text("Save Value: $displayName"),
           ],
         ),
       ),
@@ -81,8 +83,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> loadData() async {
-    final prefs = await SharedPreferences.getInstance();
-    String? storedName = prefs.getString(keyName);
+    String? storedName = LocalStorage.getString(LocalStorageKeys.userValueKey);
+    // final prefs = await SharedPreferences.getInstance();
+    // String? storedName = prefs.getString(keyName);
     if (storedName != null) {
       setState(() {
         displayName = storedName;
