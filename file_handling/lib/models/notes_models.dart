@@ -8,7 +8,6 @@ class NotesModel {
     return {"title": title, "description": description};
   }
 
-
   factory NotesModel.fromJson(Map<String, dynamic> json) {
     return NotesModel(title: json["title"], description: json["description"]);
   }
