@@ -9,6 +9,9 @@ class NoteAddController extends GetxController {
   DBHelper? dbRef;
   FileHandler? fileRef;
 
+  var isLoading = false.obs;
+  var isSuccess = false.obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -22,9 +25,29 @@ class NoteAddController extends GetxController {
     allnotes.value = rawData.map((e) => NotesModel.fromMap(e)).toList();
   }
 
-  Future<void> writeFileNote() async {
-    var rawData = await dbRef!.getAllNotes();
-    final notesFile = rawData.map((e) => NotesFileModel.fromJson(e)).toList();
-    await fileRef!.writeData(notesFile);
+  /// ✅ This function now also controls loader and success state
+  Future<void> writeFileNoteWithStatus() async {
+    try {
+      isLoading.value = true;
+      isSuccess.value = false;
+
+      var rawData = await dbRef!.getAllNotes();
+      final notesFile = rawData.map((e) => NotesFileModel.fromJson(e)).toList();
+
+      await fileRef!.writeData(notesFile);
+
+      // simulate saving delay
+      await Future.delayed(Duration(seconds: 2));
+
+      isLoading.value = false;
+      isSuccess.value = true;
+
+      await Future.delayed(Duration(seconds: 2));
+      isSuccess.value = false;
+    } catch (e) {
+      isLoading.value = false;
+      isSuccess.value = false;
+      print("❌ Error while saving file: $e");
+    }
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:using_the_sqflite/controller/note_add_controller.dart';
+import 'package:using_the_sqflite/screes/animations/loading_animtions.dart';
 import 'package:using_the_sqflite/screes/widgets/floating_actionbtn.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -13,14 +14,23 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
-        title: Text("Notes"),
+        title: const Text("Notes"),
         actions: [
-          IconButton(
-            onPressed: () async {
-              await controller.writeFileNote();
-            },
-            icon: Icon(Icons.save),
-          ),
+          Obx(() {
+            if (controller.isLoading.value || controller.isSuccess.value) {
+              return LoadingAnimation(
+                isLoading: controller.isLoading.value,
+                isSuccess: controller.isSuccess.value,
+              );
+            } else {
+              return IconButton(
+                onPressed: () async {
+                  await controller.writeFileNoteWithStatus();
+                },
+                icon: Icon(Icons.save, color: Colors.white),
+              );
+            }
+          }),
         ],
       ),
 
