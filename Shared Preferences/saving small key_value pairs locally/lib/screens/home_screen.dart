@@ -84,6 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> loadData() async {
     String? storedName = LocalStorage.getString(LocalStorageKeys.userValueKey);
+    
     // final prefs = await SharedPreferences.getInstance();
     // String? storedName = prefs.getString(keyName);
     if (storedName != null) {

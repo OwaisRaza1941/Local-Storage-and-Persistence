@@ -44,7 +44,7 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Text(
           "Splash Screen",
           style: TextStyle(
-            fontSize: 28,
+            fontSize: 30,
             color: Colors.white,
             fontWeight: FontWeight.w600,
           ),

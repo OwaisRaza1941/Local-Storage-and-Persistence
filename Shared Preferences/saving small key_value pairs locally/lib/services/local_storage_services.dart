@@ -11,6 +11,7 @@ class LocalStorageKeys {
 class LocalStorage {
   static late SharedPreferences _preferences;
 
+  /// Initialize SharedPrefence
   static Future<void> initialize() async {
     _preferences = await SharedPreferences.getInstance();
   }
